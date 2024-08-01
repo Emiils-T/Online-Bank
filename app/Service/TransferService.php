@@ -33,6 +33,8 @@ class TransferService
             'amount'=>$validated['amount'],
         ]);
 
+
+
         $recipientAccount->amount_now += $validated['amount'];
         $transferAccount->amount_now -= $validated['amount'];
         $transferAccount->save();

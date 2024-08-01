@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Currency;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class FetchCryptoCurrencies extends Command
 {
@@ -27,11 +28,28 @@ class FetchCryptoCurrencies extends Command
      */
     public function handle()
     {
-        $response = Http::get('https://api.coinpaprika.com/v1/tickers');
-        $data = json_decode($response->getBody(),true);
-        $data = array_slice($data,0,100);
-        $data = json_encode($data);
+        Log::info('fetching crypto currencies');
 
-        Cache::put('crypto_currencies',$data);
+        $response = Http::get('https://api.coinpaprika.com/v1/tickers');
+        $data = json_decode($response->getBody());
+
+        foreach ($data as $crypto) {
+            Currency::updateOrCreate(
+                [
+                    'symbol' => $crypto->symbol,
+                    'type' => Currency::TYPE_CRYPTO
+                ],
+                [
+                    'name'=>$crypto->name,
+                    'price'=>$crypto->quotes->USD->price,
+                    '1h_change' =>$crypto->quotes->USD->percent_change_1h,
+                    '12h_change'=>$crypto->quotes->USD->percent_change_12h,
+                    '24h_change'=>$crypto->quotes->USD->percent_change_24h,
+                    '7d_change'=>$crypto->quotes->USD->percent_change_7d,
+                    'market_cap'=>$crypto->quotes->USD->market_cap,
+                ]
+            );
+        }
+
     }
 }

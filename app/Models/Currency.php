@@ -2,35 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Currency implements \JsonSerializable
+class Currency extends Model
 {
+    use HasFactory;
 
+     protected $fillable = [
+         'symbol',
+        'type',
+        'name',
+        'price',
+        '1h_change',
+        '12h_change',
+        '24h_change',
+        '7d_change',
+        'market_cap',
+        'market_cap',
+     ];
 
-    private string $symbol;
-    private float $value;
+     public const TYPE_CRYPTO = 'crypto';
+     public const TYPE_FIAT = 'fiat';
 
-    public function __construct(string $symbol , float $value)
-    {
-        $this->symbol = $symbol;
-        $this->value = $value;
-    }
-
-    public function getSymbol(): string
-    {
-        return $this->symbol;
-    }
-
-    public function getValue(): float
-    {
-        return $this->value;
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'symbol' => $this->symbol,
-            'value' => $this->value
-        ];
-    }
 }
