@@ -4,12 +4,14 @@ use App\Console\Commands\FetchCryptoCurrencies;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Account;
+use App\Models\CryptoWallet;
 use App\Models\Currency;
 use App\Models\Transaction;
 use App\Repositories\CryptoCurrencyRepository;
 use App\Service\CurrencyRateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -19,8 +21,13 @@ Route::get('/', function () {
 });
 
 Route::get('/home', function () {
-    $accounts = Account::all();
+    $user = Auth::user();
 
+    $accounts = Account::where('user_id','=',$user->id)->get();
+
+    if($accounts->isEmpty()){
+        $accounts=[];
+    }
     return view('dashboard',
         [
             'accounts' => $accounts
@@ -49,32 +56,35 @@ Route::get('/transactions', function () {
 
 Route::get('/investing/{id}', function ($id) {
 
-    $data = new CryptoCurrencyRepository();
+
+
+    //TODO: update crypto wallets command
+    $cryptoWallet = Auth::user()->cryptoWallet()->get();
+
     $account = Account::where('id', $id)->first();
-    $cryptos = $data->index();
+
+    $cryptoWallet=CryptoWallet::where('account_number', $account->account_number)->paginate(10);
 
 
-//    echo '<pre>';
-//    var_dump($cryptos);
+
+    $cryptoSum= Auth::user()->cryptoWallet()->sum('value_now');
+//    $cryptos = (new CryptoCurrencyRepository())->index();
+    $cryptos = Currency::where('type','=',Currency::TYPE_CRYPTO)->paginate(10);
+
+
 
     return view('investing.index', [
         'cryptos' => $cryptos,
         'id' => $id,
-        'account' => $account
+        'account' => $account,
+        'cryptoSum' => $cryptoSum,
+        'cryptoWallet' => $cryptoWallet,
     ]);
 
 })->name('investing');
 
 Route::post('/investing/{id}/buy/{symbol}', function (Request $request, $id,$symbol) {
-
-
-
-
     $user = auth()->user();
-    //TODO: search account number by id
-
-
-
 
     $account = Account::where('id', $id)->first();
 
@@ -114,6 +124,7 @@ Route::get('/test', function () {
 
 Route::get('/account/create', function () {
     $currencies = (new App\Service\CurrencyRateService)->index();//TODO: make controller
+
     return view('account.create', ['currencies' => $currencies]);
 })->middleware(['auth', 'verified'])->name('account.create');
 

@@ -23,12 +23,16 @@ investiciju konts kur nauda aug ,
 crypto konts ,
 private konts
 ## TODO:
-- when registering, bank account number = null,
-- after registering, present choice to create 
-- investment account . buy crypto with investment account funds. 
+- when registering, bank account number = null,👍
+- after registering, present choice to create 👍
+- investment account . buy crypto with investment account funds. 👍
+- add option to soft delete account
+- add option to update account 
+- add option to sell crypto at certain price;
 - 
 
 
 ## OPTIONAL
 - optional add - add parent account/shared account - can view/use shared account
-- add transaction history
+- add transaction history 👍
+- add option to sell crypto at certain price;

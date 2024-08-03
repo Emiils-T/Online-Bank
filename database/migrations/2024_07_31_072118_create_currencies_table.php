@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('symbol');
             $table->string('type');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->decimal('price');
             $table->decimal('1h_change')->nullable();
             $table->decimal('12h_change')->nullable();

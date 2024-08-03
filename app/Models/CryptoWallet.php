@@ -16,8 +16,6 @@ class CryptoWallet extends Model
         'amount',
         'value',
         'value_now',
-
-
     ];
     public function user()
     {

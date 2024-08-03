@@ -17,9 +17,6 @@ class CryptoCurrencyRepository implements CurrencyRepository
     public function index()
     {
         $data = Currency::where('type','=',Currency::TYPE_CRYPTO)->get();
-
-
-
         return $data;
     }
 

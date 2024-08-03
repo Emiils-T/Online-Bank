@@ -9,3 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('app:fetch-crypto')->everyFiveMinutes();
+Schedule::command('app:update-crypto-wallets')->everyFiveMinutes();
+Schedule::command('app:fetch-fiat')->daily();
