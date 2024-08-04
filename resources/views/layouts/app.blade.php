@@ -35,6 +35,9 @@
         {{ $slot }}
     </main>
 </div>
+<footer>
+    @include('layouts.footer')
+</footer>
 
 
 <!-- Your custom scripts -->

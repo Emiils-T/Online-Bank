@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
 
     <main class="h-full overflow-y-auto">
         <div class="container px-6 mx-auto grid">
@@ -38,7 +38,7 @@
                             @else
                                 <span style="color: red;">&#9660; {{ number_format(abs($profit), 2) }}</span>
                             @endif
-                        </p>
+                        </p>php
                     </div>
                 </div>
                 <!-- Card -->

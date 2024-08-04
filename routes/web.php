@@ -25,9 +25,9 @@ Route::get('/home', function () {
 
     $accounts = Account::where('user_id','=',$user->id)->get();
 
-    if($accounts->isEmpty()){
-        $accounts=[];
-    }
+//    if($accounts->isEmpty()){
+//        $accounts=[];
+//    }
     return view('dashboard',
         [
             'accounts' => $accounts
