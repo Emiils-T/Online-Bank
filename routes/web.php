@@ -23,7 +23,7 @@ Route::get('/', function () {
 Route::get('/home', function () {
     $user = Auth::user();
 
-    $accounts = Account::where('user_id','=',$user->id)->get();
+    $accounts = Account::where('user_id', '=', $user->id)->get();
 
 //    if($accounts->isEmpty()){
 //        $accounts=[];
@@ -54,23 +54,21 @@ Route::get('/transactions', function () {
     ]);
 })->name('transactions');
 
-Route::get('/investing/{id}', function ($id) {
+Route::get('/investing/', function () {
 
 
+    $id = Auth::user()->id;
 
-    //TODO: update crypto wallets command
-    $cryptoWallet = Auth::user()->cryptoWallet()->get();
 
     $account = Account::where('id', $id)->first();
 
-    $cryptoWallet=CryptoWallet::where('account_number', $account->account_number)->paginate(10);
+    $cryptoWallet = CryptoWallet::where('account_number', $account->account_number)->paginate(10);
 
 
+    $cryptoSum = Auth::user()->cryptoWallet()->sum('value_now');
 
-    $cryptoSum= Auth::user()->cryptoWallet()->sum('value_now');
 //    $cryptos = (new CryptoCurrencyRepository())->index();
-    $cryptos = Currency::where('type','=',Currency::TYPE_CRYPTO)->paginate(10);
-
+    $cryptos = Currency::where('type', '=', Currency::TYPE_CRYPTO)->paginate(10);
 
 
     return view('investing.index', [
@@ -83,28 +81,34 @@ Route::get('/investing/{id}', function ($id) {
 
 })->name('investing');
 
-Route::post('/investing/{id}/buy/{symbol}', function (Request $request, $id,$symbol) {
+Route::post('/investing/buy/{symbol}', function (Request $request, $symbol) {
     $user = auth()->user();
+
+    $id = Auth::user()->id;
 
     $account = Account::where('id', $id)->first();
 
-    $purchasePrice = 4;
-    $amount = $purchasePrice/$request->price;
-
-    $user->cryptoWallet()->create([
+    $cryptoWalletEntry = $user->cryptoWallet()->firstOrNew([
         'account_number' => $account->account_number,
         'symbol' => $symbol,
-        'purchase_price' => $purchasePrice,
-        'price'=>$request->price,
-        'amount' => $amount,
-        'value' => $amount*$request->price,
-        'value_now' => $amount*$request->price,
-
     ]);
-    $account->amount_now -=$purchasePrice;
+
+    $purchasePrice = $request->purchase_price;
+    $price=$request->price;
+    $additionalAmount = $purchasePrice / $price;
+
+    $cryptoWalletEntry->purchase_price+=$purchasePrice;
+    $cryptoWalletEntry->amount+=$additionalAmount;
+    $cryptoWalletEntry->value += $request->purchase_price;//TODO:fix
+    $cryptoWalletEntry->value_now =$cryptoWalletEntry->amount * $price;
+    $cryptoWalletEntry->price =$price;
+
+    $cryptoWalletEntry->save();
+
+    $account->amount_now -= $purchasePrice;
     $account->save();
 
-   return redirect("/investing/$id");
+    return redirect("/investing");
 
 });
 

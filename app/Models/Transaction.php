@@ -20,4 +20,6 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class);
     }
+     public const TYPE_SEND='send';
+     public const TYPE_RECEIVE='receive';
 }

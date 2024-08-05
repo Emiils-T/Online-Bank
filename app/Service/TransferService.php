@@ -28,10 +28,18 @@ class TransferService
 
         $user->transaction()->create([
             'account_number'=>$validated['transferAccount'],
-            'type'=>'transfer',
+            'type'=>Transaction::TYPE_SEND,
             'currency'=>$transferAccount->currency,
             'amount'=>$validated['amount'],
         ]);
+
+//          TODO:add receive
+//        $user->transaction()->create([
+//            'account_number'=>$validated['transferAccount'],
+//            'type'=>Transaction::TYPE_SEND,
+//            'currency'=>$transferAccount->currency,
+//            'amount'=>$validated['amount'],
+//        ]);
 
 
 

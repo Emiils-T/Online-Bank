@@ -38,7 +38,7 @@
                             @else
                                 <span style="color: red;">&#9660; {{ number_format(abs($profit), 2) }}</span>
                             @endif
-                        </p>php
+                        </p>
                     </div>
                 </div>
                 <!-- Card -->
@@ -112,24 +112,24 @@
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                        @foreach($cryptoWallet as $walletValue)
+                        @foreach($cryptoWallet as $walletCoin)
                             <tr>
-                                <td class="px-4 py-3 text-sm">{{ $walletValue->symbol }}</td>
-                                <td class="px-4 py-3 text-sm">{{ number_format($walletValue['amount'],5)  }}</td>
-                                <td class="px-4 py-3 text-sm">$ {{ $walletValue["value"] }}</td>
+                                <td class="px-4 py-3 text-sm">{{ $walletCoin->symbol }}</td>
+                                <td class="px-4 py-3 text-sm">{{ number_format($walletCoin['amount'],5)  }}</td>
+                                <td class="px-4 py-3 text-sm">$ {{ $walletCoin["value"] }}</td>
                                 <td class="px-4 py-3 text-sm">
-                                    @if($walletValue->value <= $walletValue->value_now )
-                                        <span style="color: green;">&#9650; $ {{ number_format($walletValue['value_now'],5) }}</span>
+                                    @if($walletCoin->value <= $walletCoin->value_now )
+                                        <span style="color: green;">&#9650; $ {{ number_format($walletCoin['value_now'],5) }}</span>
                                     @else
-                                        <span style="color: red;">&#9660; $ {{ number_format($walletValue['value_now'],5) }}</span>
+                                        <span style="color: red;">&#9660; $ {{ number_format($walletCoin['value_now'],5) }}</span>
                                     @endif
                                 </td>
 
-                                <td class="px-4 py-3 text-sm">$ {{  number_format($walletValue['price'],2) }}</td>
+                                <td class="px-4 py-3 text-sm">$ {{  number_format($walletCoin['price'],2) }}</td>
                                 <td class="px-4 py-3 text-sm">
-                                    <form method="POST" action="/investing/{{$id}}/sell/{{ $walletValue['symbol'] }}">
+                                    <form method="POST" action="/investing/sell/{{ $walletCoin['symbol'] }}">
                                         @csrf
-                                        <input type="hidden" name="symbol" value="{{ $walletValue['symbol'] }}">
+                                        <input type="hidden" name="symbol" value="{{ $walletCoin['symbol'] }}">
                                         <button type="submit">Sell</button>
                                     </form>
                                 </td>
@@ -140,75 +140,9 @@
 
 
                     </table>
-                </div>
-                <div
-                        class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
-                <span class="flex items-center col-span-3">
-                  Showing 21-30 of 100
-                </span>
-                    <span class="col-span-2"></span>
-                    <!-- Pagination -->
-                    <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                  <nav aria-label="Table navigation">
-                    <ul class="inline-flex items-center">
-                      <li>
-                        <button class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
-                                aria-label="Previous">
-                          <svg aria-hidden="true" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                            <path
-                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" fill-rule="evenodd"></path>
-                          </svg>
-                        </button>
-                      </li>
-                      <li>
-                        <button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                          1
-                        </button>
-                      </li>
-                      <li>
-                        <button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                          2
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                                class="px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
-                          3
-                        </button>
-                      </li>
-                      <li>
-                        <button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                          4
-                        </button>
-                      </li>
-                      <li>
-                        <span class="px-3 py-1">...</span>
-                      </li>
-                      <li>
-                        <button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                          8
-                        </button>
-                      </li>
-                      <li>
-                        <button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                          9
-                        </button>
-                      </li>
-                      <li>
-                        <button class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
-                                aria-label="Next">
-                          <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
-                            <path
-                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                    clip-rule="evenodd" fill-rule="evenodd"></path>
-                          </svg>
-                        </button>
-                      </li>
-                    </ul>
-                  </nav>
-                </span>
-                </div>
+                    <div class="mt-4">
+                        {{ $cryptoWallet->links() }}
+                    </div>
             </div>
 
             <!-- Charts -->
@@ -291,14 +225,54 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{ $crypto['7d_change'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{ $crypto['market_cap'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
-                            <form method="POST" action="/investing/{{$id}}/buy/{{ $crypto['symbol'] }}">
-                                @csrf
-                                <!-- Hidden inputs to send data to the server -->
-                                <input type="hidden" name="name" value="{{ $crypto['name'] }}">
-                                <input type="hidden" name="symbol" value="{{ $crypto['symbol'] }}">
-                                <input type="hidden" name="price" value="{{ $crypto['price'] }}">
-                                <button type="submit">Buy</button>
-                            </form>
+                            <button data-modal-target="#modal{{$crypto['symbol']}}" data-modal-toggle="#modal{{$crypto['symbol']}}" class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                Buy
+                            </button>
+                            <div id="#modal{{$crypto['symbol']}}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                <div class="relative p-4 w-full max-w-md max-h-full">
+                                    <!-- Modal content -->
+                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                        <!-- Modal header -->
+                                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                                Buy Crypto
+                                            </h3>
+                                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="#modal{{$crypto['symbol']}}">
+                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <form method="POST" action="/investing/buy/{{ $crypto['symbol'] }}" class="p-4 md:p-5 bg-white rounded-lg shadow dark:bg-gray-800">
+                                            @csrf
+                                            <div class="grid gap-4 mb-4 grid-cols-2">
+                                                <!-- Display the cryptocurrency symbol -->
+                                                <div class="col-span-2">
+                                                    <label for="symbol" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Symbol</label>
+                                                    <input type="text" id="symbol" value="{{ $crypto['symbol'] }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly>
+                                                </div>
+
+                                                <!-- Input field for the amount to buy -->
+                                                <div class="col-span-2">
+                                                    <label for="amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Amount to Buy</label>
+                                                    <input type="number" name="purchase_price" id="purchase_price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="Enter amount to buy" min="0.00001" step="0.00001" required>
+                                                    <input type="hidden" name="price" value="{{ $crypto['price'] }}">
+                                                    <input type="hidden" name="name" value="{{ $crypto['name'] }}">
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Buy Crypto
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                         <!-- Add more columns as needed -->
                     </tr>
@@ -316,6 +290,8 @@
             const searchInput = document.getElementById('searchInput');
             const table = document.getElementById('cryptoTable');
             const rows = table.getElementsByTagName('tr');
+
+            document.getElementById('defaultModalButton').click();
 
             searchInput.addEventListener('keyup', function () {
                 const searchTerm = searchInput.value.toLowerCase();

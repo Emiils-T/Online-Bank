@@ -7,8 +7,12 @@
     <div class="py-12 relative overflow-x-auto">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if($accounts->isEmpty())
-                <p>Looks like you don't have any accounts here. Would you like to create one?</p>
-                <a href="{{ route('account.create') }}" class="btn btn-primary">Create Account</a>
+                <div class="text-center bg-white p-6 rounded-lg shadow-md">
+                    <p class="text-gray-700 text-lg font-semibold mb-4">Looks like you don't have any accounts here. Would you like to create one?</p>
+                    <a href="{{ route('account.create') }}" class="inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500 transition">
+                        Create Account
+                    </a>
+                </div>
             @else
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 sm:rounded-lg">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -46,7 +50,7 @@
                                 {{ $account->amount_now }}
                             </td>
                             <td class="px-6 py-4">
-                                <a href="/investing/{{ $account->id}}">
+                                <a href="/investing">
                                     View
                                 </a>
                             </td>
