@@ -35,4 +35,4 @@ private konts
 ## OPTIONAL
 - optional add - add parent account/shared account - can view/use shared account
 - add transaction history 👍
-- add option to sell crypto at certain price;
+

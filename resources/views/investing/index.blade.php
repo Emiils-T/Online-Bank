@@ -1,7 +1,6 @@
 <x-app-layout>
 
 
-
     <main class="h-full overflow-y-auto">
         <div class="container px-6 mx-auto grid">
             <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
@@ -56,7 +55,7 @@
                             Account balance
                         </p>
                         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                            $ {{ $account->amount_now }}
+                            $ {{ number_format($account->amount_now,5) }}
                         </p>
                     </div>
                 </div>
@@ -65,7 +64,7 @@
                     <div class="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full dark:text-blue-100 dark:bg-blue-500">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path
-                                    d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                                d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
                         </svg>
                     </div>
                     <div>
@@ -80,7 +79,7 @@
                 <!-- Card -->
                 <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
                     <div
-                            class="p-1 mr-2 text-green-500 bg-green-200 rounded-full dark:text-green-100 dark:bg-green-500">
+                        class="p-1 mr-2 text-green-500 bg-green-200 rounded-full dark:text-green-100 dark:bg-green-500">
                         <x-crypto-logo alt="Bitcoin_Logo" class="w-9 h-9"/>
                     </div>
                     <div>
@@ -119,9 +118,11 @@
                                 <td class="px-4 py-3 text-sm">$ {{ $walletCoin["value"] }}</td>
                                 <td class="px-4 py-3 text-sm">
                                     @if($walletCoin->value <= $walletCoin->value_now )
-                                        <span style="color: green;">&#9650; $ {{ number_format($walletCoin['value_now'],5) }}</span>
+                                        <span
+                                            style="color: green;">&#9650; $ {{ number_format($walletCoin['value_now'],5) }}</span>
                                     @else
-                                        <span style="color: red;">&#9660; $ {{ number_format($walletCoin['value_now'],5) }}</span>
+                                        <span
+                                            style="color: red;">&#9660; $ {{ number_format($walletCoin['value_now'],5) }}</span>
                                     @endif
                                 </td>
 
@@ -129,9 +130,81 @@
                                 <td class="px-4 py-3 text-sm">
                                     <form method="POST" action="/investing/sell/{{ $walletCoin['symbol'] }}">
                                         @csrf
-                                        <input type="hidden" name="symbol" value="{{ $walletCoin['symbol'] }}">
-                                        <button type="submit">Sell</button>
+                                        <button data-modal-target="#sellModal{{$walletCoin['symbol']}}"
+                                                data-modal-toggle="#sellModal{{$walletCoin['symbol']}}"
+                                                class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                type="button">
+                                            Sell
+                                        </button>
                                     </form>
+                                    <div id="#sellModal{{$walletCoin['symbol']}}" tabindex="-1" aria-hidden="true"
+                                         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                        <div class="relative p-4 w-full max-w-md max-h-full">
+                                            <!-- Modal content -->
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                                <!-- Modal header -->
+                                                <div
+                                                    class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                                        Sell Crypto
+                                                    </h3>
+                                                    <button type="button"
+                                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                            data-modal-toggle="#sellModal{{$walletCoin['symbol']}}">
+                                                        <svg class="w-3 h-3" aria-hidden="true"
+                                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                            <path stroke="currentColor" stroke-linecap="round"
+                                                                  stroke-linejoin="round" stroke-width="2"
+                                                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                        </svg>
+                                                        <span class="sr-only">Close modal</span>
+                                                    </button>
+                                                </div>
+                                                <!-- Modal body -->
+                                                <form method="POST" action="/investing/sell/{{ $walletCoin['symbol'] }}"
+                                                      class="p-4 md:p-5 bg-white rounded-lg shadow dark:bg-gray-800">
+                                                    @csrf
+                                                    <div class="grid gap-4 mb-4 grid-cols-2">
+                                                        <!-- Display the cryptocurrency symbol -->
+                                                        <div class="col-span-2">
+                                                            <label for="symbol"
+                                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Symbol</label>
+                                                            <input type="text" id="symbol" value="{{ $walletCoin['symbol'] }}"
+                                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                                                   readonly>
+                                                        </div>
+
+                                                        <!-- Input field for the amount to sell -->
+                                                        <div class="col-span-2">
+                                                            <label for="amount"
+                                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Amount
+                                                                to Sell</label>
+                                                            <input type="number" name="amount" id="amount"
+                                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                                                   placeholder="Enter amount to sell" step="0.00000000001" required
+                                                                   max="{{ $walletCoin['amount'] }}"
+                                                            oninput="validateAmount(this)">
+                                                            <input type="hidden" name="price" value="{{ $walletCoin['price'] }}">
+                                                            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                                                Available amount to sell: {{ $walletCoin['amount'] }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <button type="submit"
+                                                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd"
+                                                                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                                                  clip-rule="evenodd"></path>
+                                                        </svg>
+                                                        Sell Crypto
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <!-- Add more columns as needed -->
                             </tr>
@@ -143,45 +216,45 @@
                     <div class="mt-4">
                         {{ $cryptoWallet->links() }}
                     </div>
-            </div>
+                </div>
 
-            <!-- Charts -->
-            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                Charts
-            </h2>
-            <div class="grid gap-6 mb-8 md:grid-cols-2">
-                <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
-                    <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                            <div class=""></div>
+                <!-- Charts -->
+                <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+                    Charts
+                </h2>
+                <div class="grid gap-6 mb-8 md:grid-cols-2">
+                    <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
                         </div>
-                        <div class="chartjs-size-monitor-shrink">
-                            <div class=""></div>
-                        </div>
-                    </div>
-                    <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-                        Revenue
-                    </h4>
-                    <canvas id="pie" style="display: block; width: 367px; height: 183px;" width="367" height="183"
-                            class="chartjs-render-monitor"></canvas>
-                    <div class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                        <!-- Chart legend -->
-                        <div class="flex items-center">
-                            <span class="inline-block w-3 h-3 mr-1 bg-blue-500 rounded-full"></span>
-                            <span>Shirts</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="inline-block w-3 h-3 mr-1 bg-teal-600 rounded-full"></span>
-                            <span>Shoes</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span>
-                            <span>Bags</span>
+                        <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+                            Revenue
+                        </h4>
+                        <canvas id="pie" style="display: block; width: 367px; height: 183px;" width="367" height="183"
+                                class="chartjs-render-monitor"></canvas>
+                        <div class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400">
+                            <!-- Chart legend -->
+                            <div class="flex items-center">
+                                <span class="inline-block w-3 h-3 mr-1 bg-blue-500 rounded-full"></span>
+                                <span>Shirts</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="inline-block w-3 h-3 mr-1 bg-teal-600 rounded-full"></span>
+                                <span>Shoes</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span>
+                                <span>Bags</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </main>
     <div class="container mx-auto mt-8 px-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Cryptos</h1>
@@ -189,10 +262,10 @@
         <!-- Search Bar -->
         <div class="mb-4">
             <input
-                    type="text"
-                    id="searchInput"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Search cryptos..."
+                type="text"
+                id="searchInput"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Search cryptos..."
             >
         </div>
 
@@ -225,47 +298,70 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{ $crypto['7d_change'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{ $crypto['market_cap'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
-                            <button data-modal-target="#modal{{$crypto['symbol']}}" data-modal-toggle="#modal{{$crypto['symbol']}}" class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                            <button data-modal-target="#modal{{$crypto['symbol']}}"
+                                    data-modal-toggle="#modal{{$crypto['symbol']}}"
+                                    class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    type="button">
                                 Buy
                             </button>
-                            <div id="#modal{{$crypto['symbol']}}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                            <div id="#modal{{$crypto['symbol']}}" tabindex="-1" aria-hidden="true"
+                                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                                 <div class="relative p-4 w-full max-w-md max-h-full">
                                     <!-- Modal content -->
                                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                         <!-- Modal header -->
-                                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                        <div
+                                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                                 Buy Crypto
                                             </h3>
-                                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="#modal{{$crypto['symbol']}}">
-                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                            <button type="button"
+                                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                    data-modal-toggle="#modal{{$crypto['symbol']}}">
+                                                <svg class="w-3 h-3" aria-hidden="true"
+                                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                          stroke-linejoin="round" stroke-width="2"
+                                                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                                 </svg>
                                                 <span class="sr-only">Close modal</span>
                                             </button>
                                         </div>
                                         <!-- Modal body -->
-                                        <form method="POST" action="/investing/buy/{{ $crypto['symbol'] }}" class="p-4 md:p-5 bg-white rounded-lg shadow dark:bg-gray-800">
+                                        <form method="POST" action="/investing/buy/{{ $crypto['symbol'] }}"
+                                              class="p-4 md:p-5 bg-white rounded-lg shadow dark:bg-gray-800">
                                             @csrf
                                             <div class="grid gap-4 mb-4 grid-cols-2">
                                                 <!-- Display the cryptocurrency symbol -->
                                                 <div class="col-span-2">
-                                                    <label for="symbol" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Symbol</label>
-                                                    <input type="text" id="symbol" value="{{ $crypto['symbol'] }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly>
+                                                    <label for="symbol"
+                                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Symbol</label>
+                                                    <input type="text" id="symbol" value="{{ $crypto['symbol'] }}"
+                                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                                           readonly>
                                                 </div>
 
                                                 <!-- Input field for the amount to buy -->
                                                 <div class="col-span-2">
-                                                    <label for="amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Amount to Buy</label>
-                                                    <input type="number" name="purchase_price" id="purchase_price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="Enter amount to buy" min="0.00001" step="0.00001" required>
+                                                    <label for="amount"
+                                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Amount
+                                                        to Buy</label>
+                                                    <input type="number" name="purchase_price" id="purchase_price"
+                                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                                           placeholder="Enter amount to buy" min="0.00001"
+                                                           step="0.00001" required>
                                                     <input type="hidden" name="price" value="{{ $crypto['price'] }}">
                                                     <input type="hidden" name="name" value="{{ $crypto['name'] }}">
                                                 </div>
                                             </div>
 
-                                            <button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                                            <button type="submit"
+                                                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                                          clip-rule="evenodd"></path>
                                                 </svg>
                                                 Buy Crypto
                                             </button>
@@ -313,6 +409,15 @@
                 }
             });
         });
+        function validateAmount(input) {
+            const maxAmount = parseFloat(input.max);
+            const value = parseFloat(input.value);
+
+            if (value > maxAmount) {
+                input.value = maxAmount;
+                alert('You cannot sell more than the available amount.');
+            }
+        }
     </script>
 
 
