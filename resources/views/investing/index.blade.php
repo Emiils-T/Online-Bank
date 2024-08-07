@@ -218,43 +218,29 @@
                     </div>
                 </div>
 
-                <!-- Charts -->
-                <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                    Charts
-                </h2>
-                <div class="grid gap-6 mb-8 md:grid-cols-2">
-                    <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
-                        <div class="chartjs-size-monitor">
-                            <div class="chartjs-size-monitor-expand">
-                                <div class=""></div>
-                            </div>
-                            <div class="chartjs-size-monitor-shrink">
-                                <div class=""></div>
+
+                <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                        Crypto Wallet Holdings
+                    </h2>
+
+                    <div class="flex flex-col md:flex-row">
+                        <div class="w-full md:w-2/3 mb-6 md:mb-0">
+                            <div class="chart-container" style="position: relative; height: 300px;">
+                                <canvas id="pieChart"></canvas>
                             </div>
                         </div>
-                        <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-                            Revenue
-                        </h4>
-                        <canvas id="pie" style="display: block; width: 367px; height: 183px;" width="367" height="183"
-                                class="chartjs-render-monitor"></canvas>
-                        <div class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                            <!-- Chart legend -->
-                            <div class="flex items-center">
-                                <span class="inline-block w-3 h-3 mr-1 bg-blue-500 rounded-full"></span>
-                                <span>Shirts</span>
-                            </div>
-                            <div class="flex items-center">
-                                <span class="inline-block w-3 h-3 mr-1 bg-teal-600 rounded-full"></span>
-                                <span>Shoes</span>
-                            </div>
-                            <div class="flex items-center">
-                                <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span>
-                                <span>Bags</span>
+
+                        <div class="w-full md:w-1/3 md:pl-6">
+                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                    Holdings Breakdown
+                                </h3>
+                                <div id="legend" class="space-y-2"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
     </main>
     <div class="container mx-auto mt-8 px-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Cryptos</h1>
@@ -387,7 +373,7 @@
             const table = document.getElementById('cryptoTable');
             const rows = table.getElementsByTagName('tr');
 
-            document.getElementById('defaultModalButton').click();
+
 
             searchInput.addEventListener('keyup', function () {
                 const searchTerm = searchInput.value.toLowerCase();
@@ -418,7 +404,70 @@
                 alert('You cannot sell more than the available amount.');
             }
         }
-    </script>
+        // document.getElementById('defaultModalButton').click();
 
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            const walletHoldings = @json($walletHoldings);
+
+            const data = {
+                labels: Object.keys(walletHoldings),
+                datasets: [{
+                    data: Object.values(walletHoldings),
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                    ],
+                    borderWidth: 2
+                }]
+            };
+
+            const pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.chart._metasets[context.datasetIndex].total;
+                                    const percentage = ((value / total) * 100).toFixed(2) + '%';
+                                    return `${label}: ${value.toLocaleString()} (${percentage})`;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+
+            // Generate the legend
+            const legendContainer = document.getElementById('legend');
+            Object.entries(walletHoldings).forEach(([key, value], index) => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'flex items-center justify-between text-sm';
+                legendItem.innerHTML = `
+      <div class="flex items-center">
+        <span class="inline-block w-3 h-3 mr-2 rounded-full" style="background-color: ${data.datasets[0].backgroundColor[index]};"></span>
+        <span class="font-medium text-gray-700 dark:text-gray-300">${key}</span>
+      </div>
+      <span class="font-semibold text-gray-900 dark:text-gray-100">${value.toLocaleString()}</span>
+    `;
+                legendContainer.appendChild(legendItem);
+            });
+        });
+
+    </script>
 
 </x-app-layout>

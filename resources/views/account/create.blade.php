@@ -5,7 +5,7 @@
         <!-- Type -->
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <x-input-label for="type" class="max-w-7xl mx-auto sm:px-6 lg:px-8">Account Type</x-input-label>
-            <select id="type" name="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select id="type" name="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 <option value="" disabled selected>Choose Account Type</option>
                 <option value="investing">Investment Account</option>
                 <option value="checking">Checking Account</option>
@@ -14,13 +14,14 @@
 
         <!-- Currency -->
         <div class="mt-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <x-input-label for="currency" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Currency</x-input-label>
-            <select id="currency" name="currency" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <x-input-label for="currency" class="block mb-2 text-sm font-medium text-gray-900">Currency</x-input-label>
+            <select id="currency" name="currency" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 <option value="" disabled selected>Choose Currency</option>
                 @foreach($currencies as $currency)
-                    <option value="{{ $currency->symbol }}">{{ strtoupper($currency->symbol ) }}</option>
+                    <option value="{{ $currency->symbol }}">{{ strtoupper($currency->symbol) }}</option>
                 @endforeach
             </select>
+            <input type="hidden" id="hidden_currency" name="hidden_currency" value="">
         </div>
 
         <!-- Starting Amount -->
@@ -36,4 +37,26 @@
             </x-primary-button>
         </div>
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const accountTypeSelect = document.getElementById('type');
+            const currencySelect = document.getElementById('currency');
+            const hiddenCurrencyInput = document.getElementById('hidden_currency');
+
+            accountTypeSelect.addEventListener('change', function () {
+                if (this.value === 'investing') {
+                    currencySelect.value = 'USD';
+                    currencySelect.disabled = true;
+                    currencySelect.classList.add('disabled');
+                    hiddenCurrencyInput.value = 'USD';
+                } else {
+                    currencySelect.value = '';
+                    currencySelect.disabled = false;
+                    currencySelect.classList.remove('disabled');
+                    hiddenCurrencyInput.value = '';
+                }
+            });
+        });
+    </script>
 </x-app-layout>

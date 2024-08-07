@@ -17,6 +17,7 @@
 
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-gray-100">
@@ -33,6 +34,7 @@
 
     <!-- Page Content -->
     <main>
+        @yield('content')
         {{ $slot }}
     </main>
 </div>
@@ -43,5 +45,6 @@
 
 <!-- Your custom scripts -->
 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+
 </body>
 </html>

@@ -4,8 +4,9 @@
             {{ __('Home Page') }}
         </h2>
     </x-slot>
-    <div class="py-12 relative overflow-x-auto">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="bg-gray-100 flex  justify-center h-screen">
+        <div class="container mx-auto p-4">
+            <div class="flex space-x-4">
             @if($accounts->isEmpty())
                 <div class="text-center bg-white p-6 rounded-lg shadow-md">
                     <p class="text-gray-700 text-lg font-semibold mb-4">Looks like you don't have any accounts here. Would you like to create one?</p>
@@ -47,7 +48,7 @@
                                 {{ $account->type }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $account->amount_now }}
+                                {{ number_format($account->amount_now,2) }}
                             </td>
                             <td class="px-6 py-4">
                                 <a href="/investing">
@@ -59,8 +60,7 @@
                     </tbody>
                 </table>
             @endif
-
         </div>
     </div>
-
+    </div>
 </x-app-layout>

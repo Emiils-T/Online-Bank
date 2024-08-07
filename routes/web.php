@@ -2,6 +2,7 @@
 
 use App\Console\Commands\FetchCryptoCurrencies;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Account;
 use App\Models\CryptoWallet;
@@ -16,8 +17,16 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
+
+//TODO add checking account dashboard
+//TODO add controllers
+//TODO add exchange rate conversion when transfering
+//TODO add receive transaction for transfers
+//TODO add transaction for Crypto
+
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/home', function () {
@@ -57,18 +66,24 @@ Route::get('/transactions', function () {
 Route::get('/investing/', function () {
 
 
+
     $id = Auth::user()->id;
 
 
     $account = Account::where('id', $id)->first();
 
-    $cryptoWallet = CryptoWallet::where('account_number', $account->account_number)->paginate(10);
+    $cryptoWallet = CryptoWallet::where('account_number', $account->account_number)->paginate(10,['*'],'wallet');
 
 
     $cryptoSum = Auth::user()->cryptoWallet()->sum('value_now');
 
 //    $cryptos = (new CryptoCurrencyRepository())->index();
-    $cryptos = Currency::where('type', '=', Currency::TYPE_CRYPTO)->paginate(10);
+    $cryptos = Currency::where('type', '=', Currency::TYPE_CRYPTO)->paginate(10,['*'],'cryptos');
+
+    $walletHoldings=[];
+    foreach ($cryptoWallet as $crypto) {
+        $walletHoldings[$crypto->symbol] = $crypto->value_now;
+    }
 
 
     return view('investing.index', [
@@ -77,9 +92,12 @@ Route::get('/investing/', function () {
         'account' => $account,
         'cryptoSum' => $cryptoSum,
         'cryptoWallet' => $cryptoWallet,
+        'walletHoldings' => $walletHoldings,
     ]);
 
 })->name('investing');
+
+
 
 Route::post('/investing/buy/{symbol}', function (Request $request, $symbol) {
     $user = auth()->user();
@@ -164,15 +182,21 @@ Route::post('/investing/sell/{symbol}', function (Request $request, $symbol) {
 
 
 });
+Route::get('/test',function (){
+    $user = Auth::user();
 
-Route::get('/test', function () {
-    $rep = new CryptoCurrencyRepository();
-    $data = $rep->index();
-
-    echo $data[0]->symbol;
-    var_dump($data);
-
+    $investment = Account::where('user_id', '=', $user->id)
+        ->where('type','investing')
+        ->get();
+    $checking = Account::where('user_id', '=', $user->id)
+        ->where('type','checking')
+        ->get();
+    return view('test',[
+        'investment' => $investment,
+        'checking' => $checking
+  ]);
 });
+
 
 //Route::post('/test', function (Request $request) {
 //

@@ -21,4 +21,6 @@ class Account extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public const TYPE_INVESTMENT = 'investing ';
+    public const TYPE_CHECKING = 'checking';
 }

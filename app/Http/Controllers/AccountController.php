@@ -26,27 +26,51 @@ class AccountController extends Controller
     {
         $request = Request();
 
+        if($request->type=='checking'){
+            $validated = $request->validate([
+                'type' => 'required|string',
+                'currency' => 'required|string',
+                'starting_amount' => 'required|numeric|min:0',
+            ]);
 
-        $validated = $request->validate([
-            'type' => 'required|string',
-            'currency' => 'required|string',
-            'starting_amount' => 'required|numeric|min:0',
-        ]);
+            $user = auth()->user();
 
-        $user = auth()->user();
+            if (!$user) {
+                return redirect()->route('login')->withErrors('Please login to create an account.');
+            }
 
-        if (!$user) {
-            return redirect()->route('login')->withErrors('Please login to create an account.');
+            $user->account()->create([
+                'account_number' => Str::uuid(),
+                'type' => $validated['type'],
+                'currency' => $validated['currency'],
+                'starting_amount' => $validated['starting_amount'],
+                'amount_now' => $validated['starting_amount'],
+            ]);
+            return redirect(route('dashboard', absolute: false));
+        }else{
+            $validated = $request->validate([
+                'type' => 'required|string',
+                'hidden_currency' => 'required|string',
+                'starting_amount' => 'required|numeric|min:0',
+            ]);
+
+            $user = auth()->user();
+
+            if (!$user) {
+                return redirect()->route('login')->withErrors('Please login to create an account.');
+            }
+
+            $user->account()->create([
+                'account_number' => Str::uuid(),
+                'type' => $validated['type'],
+                'currency' => 'USD',
+                'starting_amount' => $validated['starting_amount'],
+                'amount_now' => $validated['starting_amount'],
+            ]);
+            return redirect(route('dashboard', absolute: false));
         }
 
-        $user->account()->create([
-            'account_number' => Str::uuid(),
-            'type' => $validated['type'],
-            'currency' => $validated['currency'],
-            'starting_amount' => $validated['starting_amount'],
-            'amount_now' => $validated['starting_amount'],
-        ]);
-        return redirect(route('dashboard', absolute: false));
+
     }
 
     public function transfer(Request $request)
