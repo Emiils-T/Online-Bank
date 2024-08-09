@@ -48,11 +48,10 @@ Route::get('/home', function () {
 
 Route::get('/transfer', function () {
 
-    $user=Auth::user();
-    print_r($user->id);
+    $user = Auth::user();
 
-    $accounts = Account::where('user_id',$user->id)
-        ->where('type',Account::TYPE_CHECKING)
+    $accounts = Account::where('user_id', $user->id)
+        ->where('type', Account::TYPE_CHECKING)
         ->get();
     return view('account.send', [
         'accounts' => $accounts
@@ -64,7 +63,7 @@ Route::post('/transfer', [AccountController::class, 'transfer'])->name('transfer
 
 Route::get('/transactions', function () {
 
-    $transactions = Transaction::where('user_id', Auth::id())->get();
+    $transactions = Transaction::where('user_id', Auth::id())->paginate(10);
 
     return view('transactions.index', [
         'transactions' => $transactions
@@ -112,7 +111,6 @@ Route::post('/investing/{account_id}/buy/{symbol}', function (Request $request, 
     $account = Account::where('id', $account_id)->first();
 
 
-
     $cryptoWalletEntry = $user->cryptoWallet()->firstOrNew([
         'account_number' => $account->account_number,
         'symbol' => $symbol,
@@ -136,7 +134,7 @@ Route::post('/investing/{account_id}/buy/{symbol}', function (Request $request, 
     return redirect("/investing/$account_id");
 
 });
-Route::post('/investing/{account_id}/sell/{symbol}', function (Request $request,$account_id, $symbol) {
+Route::post('/investing/{account_id}/sell/{symbol}', function (Request $request, $account_id, $symbol) {
     $user = auth()->user();
 
 
