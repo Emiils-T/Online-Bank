@@ -32,20 +32,28 @@ Route::get('/', function () {
 Route::get('/home', function () {
     $user = Auth::user();
 
-    $accounts = Account::where('user_id', '=', $user->id)->get();
+    $investment = Account::where('user_id', '=', $user->id)
+        ->where('type', 'investing')
+        ->get();
 
-//    if($accounts->isEmpty()){
-//        $accounts=[];
-//    }
-    return view('dashboard',
-        [
-            'accounts' => $accounts
-        ]);
+    $checking = Account::where('user_id', '=', $user->id)
+        ->where('type', 'checking')
+        ->get();
+
+    return view('test', [
+        'investment' => $investment,
+        'checking' => $checking
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/transfer', function () {
 
-    $accounts = Account::all();
+    $user=Auth::user();
+    print_r($user->id);
+
+    $accounts = Account::where('user_id',$user->id)
+        ->where('type',Account::TYPE_CHECKING)
+        ->get();
     return view('account.send', [
         'accounts' => $accounts
     ]);
@@ -63,24 +71,25 @@ Route::get('/transactions', function () {
     ]);
 })->name('transactions');
 
-Route::get('/investing/', function () {
+Route::get('/investing/{account_id}', function ($account_id) {
 
 
+    $user = Auth::user();
 
-    $id = Auth::user()->id;
+    $account = Account::where('id', $account_id)->first();
+
+    $cryptoWallet = CryptoWallet::where('account_number', $account->account_number)
+        ->paginate(10, ['*'], 'wallet');
 
 
-    $account = Account::where('id', $id)->first();
-
-    $cryptoWallet = CryptoWallet::where('account_number', $account->account_number)->paginate(10,['*'],'wallet');
-
-
-    $cryptoSum = Auth::user()->cryptoWallet()->sum('value_now');
+    $cryptoSum = Auth::user()->cryptoWallet()
+        ->where('account_number', $account->account_number)
+        ->sum('value_now');
 
 //    $cryptos = (new CryptoCurrencyRepository())->index();
-    $cryptos = Currency::where('type', '=', Currency::TYPE_CRYPTO)->paginate(10,['*'],'cryptos');
+    $cryptos = Currency::where('type', '=', Currency::TYPE_CRYPTO)->paginate(10, ['*'], 'cryptos');
 
-    $walletHoldings=[];
+    $walletHoldings = [];
     foreach ($cryptoWallet as $crypto) {
         $walletHoldings[$crypto->symbol] = $crypto->value_now;
     }
@@ -88,7 +97,6 @@ Route::get('/investing/', function () {
 
     return view('investing.index', [
         'cryptos' => $cryptos,
-        'id' => $id,
         'account' => $account,
         'cryptoSum' => $cryptoSum,
         'cryptoWallet' => $cryptoWallet,
@@ -98,13 +106,12 @@ Route::get('/investing/', function () {
 })->name('investing');
 
 
-
-Route::post('/investing/buy/{symbol}', function (Request $request, $symbol) {
+Route::post('/investing/{account_id}/buy/{symbol}', function (Request $request, $account_id, $symbol) {
     $user = auth()->user();
 
-    $id = Auth::user()->id;
+    $account = Account::where('id', $account_id)->first();
 
-    $account = Account::where('id', $id)->first();
+
 
     $cryptoWalletEntry = $user->cryptoWallet()->firstOrNew([
         'account_number' => $account->account_number,
@@ -117,7 +124,7 @@ Route::post('/investing/buy/{symbol}', function (Request $request, $symbol) {
 
     $cryptoWalletEntry->purchase_price += $purchasePrice;
     $cryptoWalletEntry->amount += $additionalAmount;
-    $cryptoWalletEntry->value += $request->purchase_price;//TODO:fix
+    $cryptoWalletEntry->value += $request->purchase_price;
     $cryptoWalletEntry->value_now = $cryptoWalletEntry->amount * $price;
     $cryptoWalletEntry->price = $price;
 
@@ -126,14 +133,17 @@ Route::post('/investing/buy/{symbol}', function (Request $request, $symbol) {
     $account->amount_now -= $purchasePrice;
     $account->save();
 
-    return redirect("/investing");
+    return redirect("/investing/$account_id");
 
 });
-Route::post('/investing/sell/{symbol}', function (Request $request, $symbol) {
+Route::post('/investing/{account_id}/sell/{symbol}', function (Request $request,$account_id, $symbol) {
     $user = auth()->user();
 
 
-    $account = Account::where('id', $user->id)->first();
+    $account = Account::where('id', $account_id)->first();
+    print_r($account->account_number);
+    print_r($request->amount);
+    print_r($symbol);
 
 
     $request->validate([
@@ -147,6 +157,7 @@ Route::post('/investing/sell/{symbol}', function (Request $request, $symbol) {
         'symbol' => $symbol,
     ])->first();
 
+
     // Calculate the new values
     $amountToSell = $request->amount;
     $currentAmount = $cryptoWallet->amount;
@@ -159,7 +170,7 @@ Route::post('/investing/sell/{symbol}', function (Request $request, $symbol) {
 
         $account->amount_now += $amountToSell * $request->price;
         $account->save();
-        return redirect("/investing");
+        return redirect("/investing/$account_id");
     } else {
         $newAmount = $currentAmount - $amountToSell;
         $currentPrice = $cryptoWallet->price;
@@ -177,25 +188,31 @@ Route::post('/investing/sell/{symbol}', function (Request $request, $symbol) {
         $account->save();
 
 
-        return redirect("/investing");
+        return redirect("/investing/$account_id");
     }
 
 
 });
-Route::get('/test',function (){
-    $user = Auth::user();
 
-    $investment = Account::where('user_id', '=', $user->id)
-        ->where('type','investing')
-        ->get();
-    $checking = Account::where('user_id', '=', $user->id)
-        ->where('type','checking')
-        ->get();
-    return view('test',[
-        'investment' => $investment,
-        'checking' => $checking
-  ]);
-});
+
+//Route::get('/test', function () {
+//    $user = Auth::user();
+//
+//    $investment = Account::where('user_id', '=', $user->id)
+//        ->where('type', 'investing')
+//        ->get();
+////    dd($investment);
+////    foreach ($investment as $account) {
+////        echo $account->id;
+////    }die;
+//    $checking = Account::where('user_id', '=', $user->id)
+//        ->where('type', 'checking')
+//        ->get();
+//    return view('test', [
+//        'investment' => $investment,
+//        'checking' => $checking
+//    ]);
+//});
 
 
 //Route::post('/test', function (Request $request) {

@@ -72,7 +72,7 @@
                             Crypto Total Value
                         </p>
                         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                            $ {{number_format($cryptoSum ,5)}}
+                            $ {{number_format($cryptoSum ,2)}}
                         </p>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
 
                                 <td class="px-4 py-3 text-sm">$ {{  number_format($walletCoin['price'],2) }}</td>
                                 <td class="px-4 py-3 text-sm">
-                                    <form method="POST" action="/investing/sell/{{ $walletCoin['symbol'] }}">
+                                    <form method="POST" action="/investing/{{$account->id}}/sell/{{ $walletCoin['symbol'] }}">
                                         @csrf
                                         <button data-modal-target="#sellModal{{$walletCoin['symbol']}}"
                                                 data-modal-toggle="#sellModal{{$walletCoin['symbol']}}"
@@ -161,7 +161,7 @@
                                                     </button>
                                                 </div>
                                                 <!-- Modal body -->
-                                                <form method="POST" action="/investing/sell/{{ $walletCoin['symbol'] }}"
+                                                <form method="POST" action="/investing/{{$account->id}}/sell/{{ $walletCoin['symbol'] }}"
                                                       class="p-4 md:p-5 bg-white rounded-lg shadow dark:bg-gray-800">
                                                     @csrf
                                                     <div class="grid gap-4 mb-4 grid-cols-2">
@@ -181,7 +181,7 @@
                                                                 to Sell</label>
                                                             <input type="number" name="amount" id="amount"
                                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                                                   placeholder="Enter amount to sell" step="0.00000000001" required
+                                                                   placeholder="Enter amount to sell" step="0.00000000000000001" required
                                                                    max="{{ $walletCoin['amount'] }}"
                                                             oninput="validateAmount(this)">
                                                             <input type="hidden" name="price" value="{{ $walletCoin['price'] }}">
@@ -314,7 +314,7 @@
                                             </button>
                                         </div>
                                         <!-- Modal body -->
-                                        <form method="POST" action="/investing/buy/{{ $crypto['symbol'] }}"
+                                        <form method="POST" action="/investing/{{$account->id}}/buy/{{ $crypto['symbol'] }}"
                                               class="p-4 md:p-5 bg-white rounded-lg shadow dark:bg-gray-800">
                                             @csrf
                                             <div class="grid gap-4 mb-4 grid-cols-2">

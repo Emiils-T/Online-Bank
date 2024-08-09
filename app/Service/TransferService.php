@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Models\Account;
-use Illuminate\Http\Request;
+use App\Models\Currency;
 use App\Models\Transaction;
 
 class TransferService
@@ -26,6 +26,22 @@ class TransferService
 
         $recipientAccount = Account::where('account_number', $validated['recipientAccount'])->first();
 
+        $transferRate=Currency::where('type',Currency::TYPE_FIAT)
+            ->where('symbol',$transferAccount->currency)
+            ->first();
+        $receiveRate=Currency::where('type',Currency::TYPE_FIAT)
+            ->where('symbol',$recipientAccount->currency)
+            ->first();
+
+        $baseRate = 1;
+
+        $rate = $transferRate->price/$receiveRate->price;
+
+
+        $convertedAmount = $validated['amount']*($baseRate/$rate);
+
+
+
         $user->transaction()->create([
             'account_number'=>$validated['transferAccount'],
             'type'=>Transaction::TYPE_SEND,
@@ -33,19 +49,21 @@ class TransferService
             'amount'=>$validated['amount'],
         ]);
 
-//          TODO:add receive
-//        $user->transaction()->create([
-//            'account_number'=>$validated['transferAccount'],
-//            'type'=>Transaction::TYPE_SEND,
-//            'currency'=>$transferAccount->currency,
-//            'amount'=>$validated['amount'],
-//        ]);
+
+        Transaction::create([
+            'user_id'=>$recipientAccount->user_id,
+            'account_number'=>$validated['transferAccount'],
+            'type'=>Transaction::TYPE_RECEIVE,
+            'currency'=>$transferAccount->currency,
+            'amount'=>$validated['amount'],
+        ]);
 
 
 
-        $recipientAccount->amount_now += $validated['amount'];
         $transferAccount->amount_now -= $validated['amount'];
         $transferAccount->save();
+
+        $recipientAccount->amount_now += $convertedAmount;
         $recipientAccount->save();
 
     }
