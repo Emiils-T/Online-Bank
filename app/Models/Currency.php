@@ -20,6 +20,8 @@ class Currency extends Model
         '7d_change',
         'market_cap',
         'market_cap',
+        'coin_id',
+        'logo'
      ];
 
      public const TYPE_CRYPTO = 'crypto';

@@ -63,6 +63,8 @@ Route::post('/transfer', [AccountController::class, 'transfer'])->name('transfer
 
 Route::get('/transactions', function () {
 
+    //TODO add controller
+
     $transactions = Transaction::where('user_id', Auth::id())->paginate(10);
 
     return view('transactions.index', [
@@ -72,6 +74,7 @@ Route::get('/transactions', function () {
 
 Route::get('/investing/{account_id}', function ($account_id) {
 
+    //TODO add controller
 
     $user = Auth::user();
 
@@ -106,7 +109,11 @@ Route::get('/investing/{account_id}', function ($account_id) {
 
 
 Route::post('/investing/{account_id}/buy/{symbol}', function (Request $request, $account_id, $symbol) {
+    //TODO add controller
+
     $user = auth()->user();
+    //TODO: validate if crypto is in currencies table
+    //TODO: validate if buy amount <= account balance
 
     $account = Account::where('id', $account_id)->first();
 
@@ -115,6 +122,8 @@ Route::post('/investing/{account_id}/buy/{symbol}', function (Request $request, 
         'account_number' => $account->account_number,
         'symbol' => $symbol,
     ]);
+
+    $logo=$request->logo;
 
     $purchasePrice = $request->purchase_price;
     $price = $request->price;
@@ -125,6 +134,7 @@ Route::post('/investing/{account_id}/buy/{symbol}', function (Request $request, 
     $cryptoWalletEntry->value += $request->purchase_price;
     $cryptoWalletEntry->value_now = $cryptoWalletEntry->amount * $price;
     $cryptoWalletEntry->price = $price;
+    $cryptoWalletEntry->logo = $logo;
 
     $cryptoWalletEntry->save();
 
@@ -135,6 +145,8 @@ Route::post('/investing/{account_id}/buy/{symbol}', function (Request $request, 
 
 });
 Route::post('/investing/{account_id}/sell/{symbol}', function (Request $request, $account_id, $symbol) {
+    //TODO add controller
+
     $user = auth()->user();
 
 
@@ -190,6 +202,16 @@ Route::post('/investing/{account_id}/sell/{symbol}', function (Request $request,
     }
 
 
+});
+
+Route::get('/test',function (){
+
+    //$response = Http::get('https://api.coinpaprika.com/v1/coins/btc-bitcoin');
+    $response = Http::get('https://api.coinpaprika.com/v1/tickers');
+
+    $data = json_decode($response->getBody());
+    echo '<pre>';
+    var_dump($data[0]->id);
 });
 
 

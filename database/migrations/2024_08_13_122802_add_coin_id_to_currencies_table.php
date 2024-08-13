@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('currencies', function (Blueprint $table) {
-            //TODO:add so icon can be placed next to symbol;
+            $table->string('coin_id')->nullable();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('currencies', function (Blueprint $table) {
-            //
+            $table->dropColumn('coin_id');
         });
     }
 };

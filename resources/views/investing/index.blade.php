@@ -113,7 +113,7 @@
                         <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                         @foreach($cryptoWallet as $walletCoin)
                             <tr>
-                                <td class="px-4 py-3 text-sm">{{ $walletCoin->symbol }}</td>
+                                <td class="px-4 py-3 text-sm"><img src="{{$walletCoin['logo']}}" alt="{{ $walletCoin['symbol'] }} logo" class="inline-block h-6 w-6 mr-2" > {{ $walletCoin->symbol }}</td>
                                 <td class="px-4 py-3 text-sm">{{ number_format($walletCoin['amount'],5)  }}</td>
                                 <td class="px-4 py-3 text-sm">$ {{ $walletCoin["value"] }}</td>
                                 <td class="px-4 py-3 text-sm">
@@ -241,6 +241,8 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
     </main>
     <div class="container mx-auto mt-8 px-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Cryptos</h1>
@@ -276,7 +278,7 @@
                 @foreach($cryptos as $crypto)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $crypto["name"] }} </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $crypto['symbol'] }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><img src="{{$crypto['logo']}}" alt="{{ $crypto['symbol'] }} logo" class="inline-block h-6 w-6 mr-2" > {{ $crypto['symbol'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{ $crypto['price'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{ $crypto["1h_change"]}}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{ $crypto['12h_change']}}</td>
@@ -338,6 +340,7 @@
                                                            step="0.00001" required>
                                                     <input type="hidden" name="price" value="{{ $crypto['price'] }}">
                                                     <input type="hidden" name="name" value="{{ $crypto['name'] }}">
+                                                    <input type="hidden" name="logo" value="{{ $crypto['logo'] }}">
                                                 </div>
                                             </div>
 
@@ -361,10 +364,11 @@
                 @endforeach
                 </tbody>
             </table>
-            <div {{$cryptos->links()}}
+            <div {{$cryptos->links()}} </div>
         </div>
 
-    </div>
+
+
 
 
     <script>

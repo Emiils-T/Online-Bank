@@ -26,6 +26,7 @@ private konts
 - when registering, bank account number = null,👍
 - after registering, present choice to create 👍
 - investment account . buy crypto with investment account funds. 👍
+- add option to add more money to account.
 - add option to soft delete account
 - add option to update account 
 - add option to sell crypto at certain price;

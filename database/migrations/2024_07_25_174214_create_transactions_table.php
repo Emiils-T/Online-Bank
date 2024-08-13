@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('account_number');
             $table->string('type');
             $table->string('currency');
-            $table->integer('amount');
+            $table->decimal('amount');
             $table->timestamps();
         });
     }
