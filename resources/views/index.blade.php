@@ -2,7 +2,7 @@
     <div class="container mx-auto p-4">
         <div class="flex space-x-4">
             <!-- First Table -->
-            <div class="w-1/2 bg-white p-4 rounded-lg shadow-lg">
+            <div class="w-1/2 bg-white p-4 rounded-lg shadow-lg ">
                 <h2 class="text-xl font-bold mb-4">Checking Account</h2>
                 @if($checking->isEmpty())
                     <div class="text-center bg-white p-6 rounded-lg shadow-md">
@@ -41,10 +41,10 @@
                                 </td>
 
                                 <td class="px-6 py-4">
-                                    {{ number_format($account->amount_now,2) }}
+                                    {{ number_format($account->amount_now,5) }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <a href="/checking/{{$account->id}}">
+                                    <a href="/investing">
                                         View
                                     </a>
                                 </td>
@@ -94,7 +94,7 @@
                                     {{ strtoupper($account->currency) }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ number_format($account->amount_now,2) }}
+                                    {{ number_format($account->amount_now,5) }}
                                 </td>
                                 <td class="px-6 py-4">
                                     <a href="/investing/{{$account->id}}">

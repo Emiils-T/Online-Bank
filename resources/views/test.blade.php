@@ -2,7 +2,7 @@
 <div class="container mx-auto p-4">
     <div class="flex space-x-4">
         <!-- First Table -->
-        <div class="w-1/2 bg-white p-4 rounded-lg shadow-lg">
+        <div class="w-1/2 bg-white p-4 rounded-lg ">
             <h2 class="text-xl font-bold mb-4">Checking Account</h2>
             @if($checking->isEmpty())
                 <div class="text-center bg-white p-6 rounded-lg shadow-md">

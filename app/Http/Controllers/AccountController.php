@@ -3,26 +3,43 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Account;
 use App\Service\TransferService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Service\CurrencyRateService;
+use Illuminate\View\View;
 
 class AccountController extends Controller
 {
 
-    private TransferService $transferService;
 
-    public function __construct(TransferService $transferService)
+    public function show()
     {
-        $this->transferService = $transferService;
-    }
+        $user = Auth::user();
 
-    public function create()
+        $investment = Account::where('user_id', '=', $user->id)
+            ->where('type', 'investing')
+            ->get();
+
+        $checking = Account::where('user_id', '=', $user->id)
+            ->where('type', 'checking')
+            ->get();
+
+        return view('index', [
+            'investment' => $investment,
+            'checking' => $checking
+        ]);
+    }
+    public function create():View
     {
-        return view('account.create',);
-    }
+        $currencies = (new CurrencyRateService)->index();
 
-    public function store()
+        return view('account.create', ['currencies' => $currencies]);
+    }
+    public function store():RedirectResponse
     {
         $request = Request();
 
@@ -69,13 +86,5 @@ class AccountController extends Controller
             ]);
             return redirect(route('dashboard', absolute: false));
         }
-
-
-    }
-
-    public function transfer(Request $request)
-    {
-        $this->transferService->transfer($request);
-        return redirect(route('dashboard', absolute: false));
     }
 }
