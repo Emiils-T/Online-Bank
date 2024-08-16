@@ -34,10 +34,7 @@ class TransferService
             ->first();
 
         $baseRate = 1;
-
         $rate = $transferRate->price/$receiveRate->price;
-
-
         $convertedAmount = $validated['amount']*($baseRate/$rate);
 
 
@@ -52,10 +49,10 @@ class TransferService
 
         Transaction::create([
             'user_id'=>$recipientAccount->user_id,
-            'account_number'=>$validated['transferAccount'],
+            'account_number'=>$validated['recipientAccount'],
             'type'=>Transaction::TYPE_RECEIVE,
-            'currency'=>$transferAccount->currency,
-            'amount'=>$validated['amount'],
+            'currency'=>$recipientAccount->currency,
+            'amount'=>$convertedAmount,
         ]);
 
 

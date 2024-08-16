@@ -29,7 +29,8 @@ class TransferController extends Controller
     }
     public function store(Request $request)
     {
+
         $this->transferService->transfer($request);
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->back();
     }
 }

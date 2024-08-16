@@ -2,6 +2,7 @@
 
 use App\Console\Commands\FetchCryptoCurrencies;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\CheckingAccountController;
 use App\Http\Controllers\CryptoController;
 use App\Http\Controllers\InvestmentAccountController;
 use App\Http\Controllers\ProfileController;
@@ -40,6 +41,8 @@ Route::get('/transfer',[TransferController::class,'create'])->middleware(['auth'
 Route::post('/transfer', [TransferController::class, 'store'])->name('transfer');
 
 Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions');
+
+Route::get('/checking/{id}',[CheckingAccountController::class,'index'])->middleware(['auth', 'verified'])->name('checking');
 
 Route::get('/investing/{account_id}', [InvestmentAccountController::class, 'index'])->name('investing');
 Route::post('/investing/{account_id}/buy/{symbol}', [CryptoController::class, 'buy']);

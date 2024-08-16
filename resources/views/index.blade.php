@@ -44,7 +44,7 @@
                                     {{ number_format($account->amount_now,5) }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <a href="/investing">
+                                    <a href="/checking/{{$account->id}}">
                                         View
                                     </a>
                                 </td>
