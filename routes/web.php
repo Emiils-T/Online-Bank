@@ -21,28 +21,20 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-
-//TODO add checking account dashboard
-//TODO add controllers
-//TODO add exchange rate conversion when transfering
-//TODO add receive transaction for transfers
-//TODO add transaction for Crypto
-
-
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/home',[AccountController::class,'show'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/account/create', [AccountController::class,'create'])->middleware(['auth', 'verified'])->name('account.create');
+Route::get('/home', [AccountController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/account/create', [AccountController::class, 'create'])->middleware(['auth', 'verified'])->name('account.create');
 Route::post('/account/create', [AccountController::class, 'store'])->name('account.store');
 
-Route::get('/transfer',[TransferController::class,'create'])->middleware(['auth', 'verified']);
+Route::get('/transfer', [TransferController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/transfer', [TransferController::class, 'store'])->name('transfer');
 
 Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions');
 
-Route::get('/checking/{id}',[CheckingAccountController::class,'index'])->middleware(['auth', 'verified'])->name('checking');
+Route::get('/checking/{id}', [CheckingAccountController::class, 'index'])->middleware(['auth', 'verified'])->name('checking');
 
 Route::get('/investing/{account_id}', [InvestmentAccountController::class, 'index'])->name('investing');
 Route::post('/investing/{account_id}/buy/{symbol}', [CryptoController::class, 'buy']);
@@ -51,8 +43,6 @@ Route::post('/investing/{account_id}/sell/{symbol}', [CryptoController::class, '
 Route::get('/test', function () {
     return view('test');
 });
-
-
 
 
 Route::middleware('auth')->group(function () {
